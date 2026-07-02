@@ -1,0 +1,132 @@
+@baseUrl = http://localhost:5263
+@token = Bearer techhive-secret-token
+### Note: Change the port above to match your running application's port (e.g., 5000, 5153, etc.)
+
+
+### ==========================================
+### STANDARD CRUD OPERATIONS (Activity 1)
+### ==========================================
+
+### 1. GET All Users
+GET {{baseUrl}}/api/users
+Accept: application/json
+Authorization: {{token}}
+
+###
+
+### 2. GET User by ID
+GET {{baseUrl}}/api/users/1
+Accept: application/json
+Authorization: {{token}}
+
+###
+
+### 3. POST New User
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "Charlie Davis",
+  "email": "charlie.davis@techhive.com",
+  "department": "Engineering"
+}
+
+###
+
+### 4. PUT Update User
+PUT {{baseUrl}}/api/users/1
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "Alice Smith-Jones",
+  "email": "alice.jones@techhive.com",
+  "department": "HR Leadership"
+}
+
+###
+
+### 5. DELETE User
+DELETE {{baseUrl}}/api/users/1
+Authorization: {{token}}
+
+###
+
+### 6. VERIFY Deletion (GET All Users again)
+GET {{baseUrl}}/api/users
+Accept: application/json
+Authorization: {{token}}
+
+###
+
+
+### ==========================================
+### DEBUGGING & EDGE CASES (Activity 2)
+### ==========================================
+
+### 7. POST Validation Failure (Empty Name, Bad Email)
+### Expected Result: 400 Bad Request with a list of validation errors.
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "",
+  "email": "not-an-email",
+  "department": "Engineering"
+}
+
+###
+
+### 8. GET Non-existent ID Retrieval
+### Expected Result: 404 Not Found with message "User with ID 999 not found."
+GET {{baseUrl}}/api/users/999
+Accept: application/json
+Authorization: {{token}}
+
+###
+
+### 9. POST Valid Creation (Optimized ID)
+### Expected Result: 201 Created. ID should be generated instantly without iterating.
+POST {{baseUrl}}/api/users
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "David Miller",
+  "email": "david.miller@techhive.com",
+  "department": "Finance"
+}
+
+###
+
+
+### ==========================================
+### MIDDLEWARE TESTS (Activity 3)
+### ==========================================
+
+### 10. TEST AUTHENTICATION: Missing Token
+### Expected Result: 401 Unauthorized
+GET {{baseUrl}}/api/users
+Accept: application/json
+
+###
+
+### 11. TEST AUTHENTICATION: Invalid Token
+### Expected Result: 401 Unauthorized
+GET {{baseUrl}}/api/users
+Accept: application/json
+Authorization: Bearer wrong-token-123
+
+###
+
+### 12. TEST ERROR HANDLING: Trigger Exception
+### Expected Result: 500 Internal Server Error with { "error": "Internal server error." }
+GET {{baseUrl}}/api/users/trigger-error
+Accept: application/json
+Authorization: {{token}}
+
+### 13. TEST LOGGING: Check your terminal!
+### After running any of the requests above, look at the terminal where `dotnet run` is executing.
+### You should see logs like: "info: LoggingMiddleware[0] TechHive Audit Log - Method: GET, Path: /api/users, Status: 200"
